@@ -1,0 +1,1826 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta property="og:title" content="네이버-포항 날씨"/>
+<meta property="og:url" content="http://weather.naver.com/rgn/cityWetrCity.nhn?cityRgnCd=CT007023"/>
+<meta property="og:image" content="https://ssl.pstatic.net/static/weather/m/og_weather.png"/>
+<meta property="og:description" content="생활에 꼭 필요한 날씨와 대기환경정보"/>
+<link rel="shortcut icon" href="http://static.naver.net/www/nFavicon64.ico" type="image/x-icon">
+<title>네이버 날씨</title>
+<link rel="stylesheet" type="text/css" href="/common/css/weather_common.css?20150911">
+<link rel="stylesheet" type="text/css" href="/common/css/weather_renew.css?20150911">
+
+
+
+
+
+<!-- AU 추가 CSS -->
+<style type="text/css">
+.tab_bx.nhn_ui_panel { display: none; }
+.tab_bx.nhn_ui_selected { display: block; }
+</style>
+<!-- AU 추가 CSS -->
+<!-- AU foggy css -->
+<style type="text/css">
+div.z_select .layer_popup,
+.remove_item {
+display:none;
+}
+
+div.dim_new {
+position:absolute;
+left:0; top:0; padding:0; margin:0; border:0;
+width:100px; height:100px;
+background-color:white;
+opacity:0;
+}
+
+#favorite_region_wrapper {
+position: absolute;
+display:none;
+}
+</style>
+
+<!-- AU foggy css -->
+<script type="text/javascript">
+var APP = {};
+var aplDocRoot = "http://weather.naver.com";
+document.domain="naver.com";
+</script>
+
+<!-- nClicks -->
+<script type="text/javascript" src="/common/js/clickcr.js"></script>
+<script type="text/javascript">
+var nsc="weather.home";
+var ccsrv="cc.naver.com";
+
+var nsc="weather.rgn";
+
+
+
+
+
+
+
+</script>
+<!-- //nClicks -->
+
+<!-- AU 추가 script -->
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/jindo2_wcomp.js"></script>
+
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/WeatherTabControl.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/WeatherMapManager.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/WeatherTabLeisureSea.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/RegionDropdown.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/RegionSelector.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/TownMainInfo.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/FoggyManager.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/weatherCommon.js"></script>
+<!-- AU 추가 script -->
+
+<script type="text/javascript">
+<!--
+var oMsg = msg.RegionSelector;
+//-->
+</script>
+
+<script type="text/javascript" src="/common/js/jindo.min.ns.js"></script>
+<script type="text/javascript" src="/common/js/weatherServiceCommon.js"></script>
+
+<!-- OPS방식 도움말적용  script -->
+<script type="text/javascript" src="http://static.naver.com/common/js/cs_ops_webncc.js"></script>
+
+<!-- 뉴스 GNB script -->
+<script type="text/javascript" src="/common/js/news/lnbTopNoWeather.js"></script>
+
+<!-- HTML5/CSS3 지원여부 체크 lib (Modernizr) -->
+<script type="text/javascript" src="/common/js/modernizr.min.js"></script>
+<script type="text/javascript" src="http://weather.naver.com/common/js/ajaxUI/WeatherTabControl_city.js"></script>
+
+<script type="text/javascript">
+/** 온도그래프 flash callback URL */
+var tmprWetrURL = 'http://weather.naver.com/flash/tmprGraph.nhn?cityRgnCd=CT007023';
+
+function mapSelectChange(isToday, isAm, isCurrentWeather, idx) {
+wMapManager.setWeatherData({
+code : "CT007000",
+isToday : isToday,
+isAm : isAm,
+isCurrentWeather : isCurrentWeather
+});
+
+var aElImg= cssquery ('.z_map li a img');
+
+for (var i=0, len = aElImg.length; i < len ;i++) {
+var el = aElImg[i];
+el.src = el.src.replace (/_on/, "");
+
+if (i + 1 == idx) {
+el.src=el.src.replace (/.gif/, "_on.gif");
+}
+}
+}
+
+function goCityWetrCity(cityRgnCd) {
+location.href = "/rgn/cityWetrCity.nhn?cityRgnCd="+cityRgnCd;
+}
+var ipCityRgnCd = "CT007023";
+var ipWareaNm = "경상북도";
+var ipCityNm = "포항";
+
+// todo 	각 타입 (도시/동네/레저... 등의 상위 탭에 대한 코드)를 설정합니다.
+var aRegionCode = ["CT001000", "CT002000", "CT003000", "CT004000", "CT005000", "CT006000", "CT007000", "CT008000", "CT009000", "CT010000", "CT011000", "CT012000"];
+
+var wMapManager = new nhn.WeatherMapManager('weatherMap', {
+mapClassName : 'map',
+baseURL : 'http://weather.naver.com',
+imgURL : 'https://ssl.pstatic.net/static/weather/images/w_icon/',
+oPathByMapType : {
+currentWeather : '/json/crntWetr.nhn',
+forecast : '/json/hdayFcast.nhn'
+},
+sForcastMethod :"cityRgnHdayFcast",
+sSelectedRegionCode : "CT007023",
+sCurrentWeatherMethod : "ctiyRgnCrntWetr"
+});
+
+function getFlashHTML () {
+var sCode = nhn.Flash.getCode('http://weather.naver.com/common/swf/tempGraph_20130801.swf', {
+id : 'townForecastMini',
+width : '593',
+height : '180',
+wmode : 'window',
+flashVars : '',
+bgColor : '#FFFFFF',
+wheelHandler : 'flashWheelListener'
+});
+
+$Element ('flash_info').html ( sCode );
+
+return true;
+}
+
+$Fn(function () {
+//지도 맵 초기화
+var idx;
+//if(true){ idx = 1; }else{ idx = 2; }
+mapSelectChange(true, false, true, 1);
+
+var tab = new nhn.WeatherTabCityControl( 'nhn_weather_tab', {
+classPrefix : 'nhn_ui_',			// class prefix. 그냥 사용하세요.
+classSelected : 'on',				// select classname. 그냥 사용하세요.
+classClose: 'btn_close',			// close 버튼의 클래스. 그냥 사용하세요.
+sMode : 'cityRgnCat',				// ajax 호출에서 사용할 모드
+sParam : 'upperRgnCd',				// ajax 호출의 파라미터
+aUpperCode : aRegionCode,			// ajax 호출의 상위 코드. 상위 코드의 순서와 탭의 순서는 일치해야 한다.
+sBaseURL : "/json/rgnCat.nhn",
+sNodeTemplate : "<li {if selectedCode == code}class='on'{/if}><a href='/rgn/cityWetrCity.nhn?cityRgnCd={=code}' id='{=code}'>{=name}</a></li>",
+sSelectedRegionCode : "CT007023"
+});
+
+tab.onselect = function(e) {
+//do something when click time on the tab.
+}
+getFlashHTML ();
+}).attach (document, 'domready');
+</script>
+</head>
+<body>
+<div id="wrap">
+<!-- 레이어 - 딤처리 -->
+<!-- <div class="dim_new"></div> -->
+<!-- 스킵네비게이션 -->
+<div id="u_skip">
+<a href="#lnb"><span>메인 메뉴로 바로가기</span></a>
+<a href="#snb"><span>하위 메뉴로 바로가기</span></a>
+<a href="#content_sub"><span>본문으로 바로가기</span></a>
+</div>
+<!-- //스킵네비게이션 -->
+<!-- header -->
+<div id="header">
+
+
+
+
+
+
+<script type="text/javascript">
+//	function newsSearch(frm) {
+//		document.charset='euc-kr';
+//		window.onbeforeunload = function () {document.charset='utf-8';};
+//	}
+
+isMobileOver = false;
+
+function onMobileOver() {
+isMobileOver = true;
+window.setTimeout(showPlusMobile, 500);
+
+}
+
+function onMobileOut() {
+isMobileOver = false;
+window.setTimeout(hidePlusMobile, 1);
+}
+
+function showPlusMobile() {
+if (isMobileOver) {
+document.getElementById("plusMobile").style.display="block";
+document.getElementById("ie6Mobile").style.display="block";
+}
+}
+
+function hidePlusMobile() {
+if (isMobileOver == false) {
+document.getElementById("plusMobile").style.display="none";
+document.getElementById("ie6Mobile").style.display="none";
+}
+}
+
+function mobilePreview(){
+// 팝업창의 크기
+var nWidth = 375;
+var nHeight = 645;
+
+// popup 윈도우의 위치
+var nLeft = screen.availWidth - nWidth;
+var nTop = (screen.availHeight - nHeight)/2;
+var wId = window.open('http://mobile.naver.com/service/popup_iphone.nhn?url=htts://m.weather.naver.com','mobile_preview','top='+nTop+',left='+nLeft+',resizable=no,width='+nWidth+',height=' + nHeight);
+
+wId.focus();
+}
+
+function blockChk() {
+var aa = "http://webmsg.naver.com/popup_send/send_url.php?code=weather&SMSID=ESW00017&MMSID=EMG00005";
+var smsPopup = window.open(aa,"pop_alert","toolbar=no,scrollbars=no ,width=285,height=402,top=100,left=100");
+smsPopup.focus();
+return;
+}
+
+// 공통GNB관련 변수 선언부
+var gnb_service="weather";
+var gnb_template="gnb_utf8";
+var gnb_logout="http://weather.naver.com";
+var gnb_brightness=1 ;
+var gnb_item_hide_option= 0;
+</script>
+
+<div class="weather_gnb_wrap">
+<div id="gnb">
+<script type="text/javascript" charset="utf-8" src="http://static.gn.naver.net/template/gnb_utf8.nhn?2017051801"></script>
+</div>
+</div>
+
+<!-- <iframe title="GNB" id="gnb_box" name="gnb_new" src="http://gn.naver.com/?tmpl=210" width="100%" height="22" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe> -->
+
+<div id="snb_wrap">
+<h1><a href="http://www.naver.com/" onclick="clickcr(this,'STA.naverlogo','','',event)"><img src="http://static.naver.com/weather/images/bi_naver.gif" width="73" height="25" alt="NAVER"></a>
+<a href="http://weather.naver.com" onclick="clickcr(this,'STA.weather','','',event)"><img src="http://static.naver.com/common/snb/090513/h_weather.gif" width="39" height="25" alt="날씨" title="날씨"></a></h1>
+
+<ul class="snb_related_service">
+<li><a href="http://news.naver.com" onclick="clickcr(this,'STA.news','','',event)"><img src="http://static.news.naver.net/image/news/2013/03/snb_h_news.gif"width="26" height="13" alt="뉴스"></a></li>
+<li><a href="http://newsstand.naver.com" onclick="clickcr(this,'STA.newsstand','','',event)"><img src="http://static.news.naver.net/image/news/2013/05/snb_h_newsstand.gif" width="61" height="13" alt="뉴스스탠드"></a></li>
+<li><a href="http://sports.news.naver.com/" onclick="clickcr(this,'STA.sports','','',event)"><img src="http://static.news.naver.net/image/news/2013/03/snb_h_sports.gif" width="38" height="13" alt="스포츠"></a></li>
+</ul>
+</div>
+<div class="lnb">
+<span class="lnb_date"><strong>05</strong>.<strong>18.</strong><span class="day">(목)</span></span>
+
+
+
+
+<div class="lnb_today">
+<h3><a href="http://news.naver.com/main/history/mainnews/index.nhn" class="nclicks(nct.main)" title="주요뉴스">주요뉴스</a></h3>
+<div id="lnb.mainnews">
+
+<ul>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=437&aid=0000154402" class="nclicks(nct.maintxt,,1)" title = "공정위원장에 김상조…검찰·재벌 '쌍끌이 적폐청산' 시동">공정위원장에 김상조…검찰·재벌 '쌍끌이 적폐청산' 시…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=001&aid=0009272817" class="nclicks(nct.maintxt,,2)" title = "文대통령, 檢 '돈봉투 만찬'에 &quot;검찰개혁 아닌 공직기강 문제&quot;">文대통령, 檢 '돈봉투 만찬'에 &quot;검찰개혁 아닌 공직기강 …</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=001&aid=0009272708" class="nclicks(nct.maintxt,,3)" title = "정치권 19일 첫 청와대 회동에 기대감…5黨5色 탐색전">정치권 19일 첫 청와대 회동에 기대감…5黨5色 탐색전</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=214&aid=0000767273" class="nclicks(nct.maintxt,,4)" title = "문희상 특사 '위안부' 언급하자 日 '북핵대응' 강조">문희상 특사 '위안부' 언급하자 日 '북핵대응' 강조</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=103&oid=055&aid=0000531476" class="nclicks(nct.maintxt,,5)" title = "전국 미세먼지 '보통' 유지…강한 봄볕에..">전국 미세먼지 '보통' 유지…강한 봄볕에..</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=101&oid=437&aid=0000154403" class="nclicks(nct.maintxt,,6)" title = "'재벌 저격수' 김상조 표적은 '4대그룹'…개혁 방향은?">'재벌 저격수' 김상조 표적은 '4대그룹'…개혁 방향은?</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=102&oid=055&aid=0000531466" class="nclicks(nct.maintxt,,7)" title = "침몰 순간에도 제자 도와…뼈 한 점으로 돌아온 '또치 선생님'">침몰 순간에도 제자 도와…뼈 한 점으로 돌아온 '또치 선…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=102&oid=022&aid=0003174027" class="nclicks(nct.maintxt,,8)" title = "5·18기념식 1만명 참석…지난해 3배 '역대 최대'">5·18기념식 1만명 참석…지난해 3배 '역대 최대'</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=103&oid=056&aid=0010457021" class="nclicks(nct.maintxt,,9)" title = "미세먼지 배출량 재산정…예측치 2배로">미세먼지 배출량 재산정…예측치 2배로</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=104&oid=001&aid=0009272946" class="nclicks(nct.maintxt,,10)" title = "'스모킹건' 코미 메모 더 있다…트럼프 스캔들 일파만파 확산">'스모킹건' 코미 메모 더 있다…트럼프 스캔들 일파만파 …</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=437&aid=0000154431" class="nclicks(nct.maintxt,,11)" title = "박관천 &quot;정윤회 문건, 8가지 버전…'역린' 건드릴까 수위조절&quot;">박관천 &quot;정윤회 문건, 8가지 버전…'역린' 건드릴까 수위…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=022&aid=0003174121" class="nclicks(nct.maintxt,,12)" title = "우원식 &quot;사드반환 살펴봐야&quot; 홍석현 &quot;대통령, 후보 때와..&quot;">우원식 &quot;사드반환 살펴봐야&quot; 홍석현 &quot;대통령, 후보 때와.…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=055&aid=0000531464" class="nclicks(nct.maintxt,,13)" title = "中 음원사이트에 'K-pop 차트' 재등장…한류 금지 풀리나">中 음원사이트에 'K-pop 차트' 재등장…한류 금지 풀리…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=105&oid=001&aid=0009272790" class="nclicks(nct.maintxt,,14)" title = "단통법 6월 개정…지원금상한제 폐지·위약금상한제 신설">단통법 6월 개정…지원금상한제 폐지·위약금상한제 신설</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=009&aid=0003942687" class="nclicks(nct.maintxt,,15)" title = "&quot;시진핑 만날때 양제츠·왕이 총출동…中 태도변화 감지&quot;">&quot;시진핑 만날때 양제츠·왕이 총출동…中 태도변화 감지&quot;</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=104&oid=001&aid=0009272884" class="nclicks(nct.maintxt,,16)" title = "예멘서 콜레라 걷잡을 수 없이 확산…사망209명·감염1만..">예멘서 콜레라 걷잡을 수 없이 확산…사망209명·감염1만…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=022&aid=0003174093" class="nclicks(nct.maintxt,,17)" title = "문형표 &quot;내가 유죄면 文대통령 기간제 교사 순직처리 역시..&quot;">문형표 &quot;내가 유죄면 文대통령 기간제 교사 순직처리 역…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=102&oid=079&aid=0002968201" class="nclicks(nct.maintxt,,18)" title = "'강남역 살인'1주기…청주 상가화장실서 성폭행 시도">'강남역 살인'1주기…청주 상가화장실서 성폭행 시도</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=104&oid=214&aid=0000767288" class="nclicks(nct.maintxt,,19)" title = "조혼 병폐에…세계 女청소년 사망 1위는 임신 합병증">조혼 병폐에…세계 女청소년 사망 1위는 임신 합병증</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=101&oid=003&aid=0007960642" class="nclicks(nct.maintxt,,20)" title = "'자살보험금 미지급' 교보생명, 1개월 일부 영업정지">'자살보험금 미지급' 교보생명, 1개월 일부 영업정지</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=055&aid=0000531458" class="nclicks(nct.maintxt,,21)" title = "&quot;안보에는 여야 없다&quot;…文, 국방위 의원들과 첫 안보 일정">&quot;안보에는 여야 없다&quot;…文, 국방위 의원들과 첫 안보 일…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=104&oid=011&aid=0003034361" class="nclicks(nct.maintxt,,22)" title = "마크롱 佛 대통령의 내각, '정치적 균형·양성 평등' 강조">마크롱 佛 대통령의 내각, '정치적 균형·양성 평등' 강…</a>
+</li>
+
+<li>
+
+<a href="http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=102&oid=437&aid=0000154428" class="nclicks(nct.maintxt,,23)" title = "석면 날리는데…재개발지 '위험한 등굣길'">석면 날리는데…재개발지 '위험한 등굣길'</a>
+</li>
+
+</ul>
+
+</div>
+</div>
+<ul class="lnb_side" tabindex="0">
+<li><a href="http://news.naver.com/main/hotissue/sectionList.nhn?mid=hot&sid1=110&cid=1019690" class="nclicks(nct.right1)" title="상식in뉴스">상식in뉴스</a></li>
+<li><a href="http://news.naver.com/main/officeList.nhn" class="nclicks(nct.right2)" title="언론사 뉴스">언론사 뉴스</a></li>
+<li><a href="http://newslibrary.naver.com/search/searchByDate.nhn" class="nclicks(nct.right3)" title="라이브러리" target="_blank">라이브러리</a></li>
+<li class="end"><a href="http://news.naver.com/main/history/mainnews/index.nhn" class="nclicks(nct.right4)" title="기사배열 이력">기사배열 이력</a></li>
+</ul>
+
+
+
+
+</div>
+
+<script type="text/javascript">
+//GNB영역 외부를 클릭했을때 GNB Layer 닫기
+$Fn(function(we){
+if(!$Element(we.element).isChildOf("gnb_my_lyr") && !$Element(we.element).isChildOf("gnb_lst")){
+gnbAllLayerClose();
+}
+}).attach($Element(document), "click");
+</script>
+
+</div>
+
+<div id="container">
+<!-- left area -->
+<div class="snb">
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/common/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/common/js/json2.js"></script>
+
+<script type="text/javascript">
+var j = jQuery.noConflict();
+var memberId = "";
+
+j(document).ready(function(){
+if (memberId == null || memberId == "") {
+fn_noLogin();
+} else {
+j.ajax({
+type : "POST"
+, async : true
+, url : "/nidapi/interest_area_api.nhn"
+, dataType : "json"
+, data : {
+mode : "getListWithSvcForCache"
+, id : memberId
+, svc_cd : "002"
+}
+, cache : false
+, success : function(responseData) {
+var concernRgnCnt = responseData.result.length;
+
+if (concernRgnCnt == 0) {
+fn_emptyConcernRgn();
+} else {
+fn_JsonParser(responseData);
+}
+}, error : function(resultData) {
+
+}
+});
+}
+});
+
+function fn_JsonParser(responseData) {
+j.ajax({
+type : "POST"
+, async : true
+, url : "/common/concernArea.nhn"
+, dataType : "html"
+, data : {
+"jsonResult" : JSON.stringify(responseData)
+}
+, cache : false
+, success : function(data) {
+j('#concernArea').html(data);
+}
+});
+}
+
+function fn_noLogin() {
+j('#concernArea').html('<div class="lst" style="display:block"><div class="alert">로그인 후 이용해 주세요.</div></div>');
+}
+
+function fn_emptyConcernRgn() {
+j('#concernArea').html('<div class="lst" style="display:block"><div class="alert2">관심지역 설정이<br>필요합니다.</div></div>');
+}
+
+function concernRgnPopup() {
+var rurl = 'http://weather.naver.com/common/blankPopup.nhn';
+var name = "관심지역설정";
+window.open(rurl, name, "toolbar=no,location=no,menubar=no,scrollbals=yes,status=no,resizable=no");
+}
+
+function concernHelpShow() {
+var helpHtml = '<div class="ly_dsc" style="display:none">'
++ '<p>관심지역 설정 기능이 로그인을<br>하지 않아도 사용하실 수 있게<br>개선될 예정이며, 기존<br>설정하신 지역이 유지되지 않을<br>수 있으니 참고 바랍니다.</p>'
++ '<a href="javascript:concernHelpHide();" title="닫기" class="close"><span>닫기</span></a>'
++ '</div>';
+
+if(!j('#concernArea div').is('.ly_dsc')){
+j('#concernArea div.lst').prepend(helpHtml);
+}
+j('#concernArea div.ly_dsc').attr('style', 'display:block').attr('style');
+}
+
+function concernHelpHide() {
+j('#concernArea div.ly_dsc').attr('style', 'display:none').attr('style');
+}
+
+</script>
+<!-- LNB -->
+<div id="lnb" class="lnb_out">
+<h2><a href="/main/wetrMain.nhn" onclick="clickcr(this,'men.title','','',event)" class="select">날씨 홈</a></h2>
+<!-- [D] 선택메뉴 <li>에 class="on" (1,2depth 모두) -->
+
+<ul class="lnb">
+
+
+<li class="on"><a href="/rgn/cityWetrMain.nhn" onclick="clickcr(this,'men.local','','',event)" class="w_type1"><span>지역별 날씨</span></a>
+<ul style="display:block;">
+<li ><a href="/rgn/cityWetrMain.nhn" class="w_type1_1"><span>도시별 날씨</span></a></li>
+<li ><a href="/rgn/townWetr.nhn" class="w_type1_2"><span>동네별 날씨</span></a></li>
+<li ><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSMT001" class="w_type1_3"><span>레저 날씨</span></a></li>
+<li ><a href="/rgn/seaWetr.nhn?seaRgnCd=SE001001" class="w_type1_4"><span>바다 날씨</span></a></li>
+</ul>
+</li>
+
+
+
+
+
+
+
+<li><a href="/period/weeklyFcast.nhn" onclick="clickcr(this,'men.week','','',event)" class="w_type2"><span>기간별 날씨</span></a></li>
+
+
+
+
+
+
+<li><a href="/news/wetrNewsList.nhn" onclick="clickcr(this,'men.news','','',event)" class="w_type3"><span>뉴스,기상특보</span></a></li>
+
+
+
+
+
+
+<li><a href="/photo/satPhoto.nhn?photoType=IR&photoRgn=L" onclick="clickcr(this,'men.sat','','',event)" class="w_type4"><span>날씨영상</span></a></li>
+
+
+
+
+
+
+<li><a href="/life/lifeNdx.nhn?cityRgnCd=CT001000" onclick="clickcr(this,'men.life','','',event)" class="w_type5"><span>생활정보</span></a></li>
+
+
+
+
+
+
+<li><a href="/world/worldWetrCtnt.nhn?worldRgnCd=WD00000004" onclick="clickcr(this,'men.wld','','',event)" class="w_type6"><span>세계날씨</span></a></li>
+
+
+
+
+
+
+<li class="last"><a href="/air/airFcast.nhn" onclick="clickcr(this,'men.air','','',event)" class="w_type7"><span>대기환경정보</span></a></li>
+
+
+
+</ul>
+</div>
+
+<!-- 관심지역 설정/내가 찾아본 동네 -->
+<div class="village_out">
+<div class="tit">
+<h3><img src="https://ssl.pstatic.net/static/weather/images/h3_zone_weather.gif" width="61" height="11" alt="관심지역 날씨"></h3>
+<a href="javascript:concernHelpShow();" title="도움말" class="help">도움말</a>
+
+</div>
+<div id="concernArea"></div>
+<!-- 내가 찾아본 동네 -->
+<div class="tit t2">
+<h3><img src="https://ssl.pstatic.net/static/weather/images/h3_view_village.gif" width="73" height="11" alt="내가 찾아본 동네"></h3>
+<span><a href="" id="btn_help" onclick="clickcr(this,'vst.help','','',event); return false;"><img src="https://ssl.pstatic.net/static/weather/images/btn_help.gif" width="14" height="14" alt="내가 찾아본 동네 : 도움말"></a></span>
+</div>
+<div class="lst_out">
+<!-- 도움말 레이어 -->
+<div id="layer_bubble_out" class="layer_bubble" style="display:none; top:-5px; left:0px;">
+<div class="layer_content">
+<!-- Layer Content -->
+<div class="layer_body">
+<h5>내가 찾아본 동네</h5>
+<ul>
+<li>동네별 날씨를 확인한 다음 다시 접속하면 [내가 찾아본 동네]에 날씨 정보가 나타납니다 . [내가 찾아본 동네]에 나타나는 지역은 <span>최대 5개</span>입니다.</li>
+<li style="margin-top:7px;">내가 찾아본 동네가 관심 지역으로 등록된 지역이면<br>
+[관심 지역 날씨]에 날씨 정보가 나타납니다.</li>
+<li style="margin-top:7px;">행정구역변경으로 지역구분 및 지역명에 변동이 있을<br>
+경우,&nbsp;&nbsp;내가 찾아본 동네에서 삭제될 수 있습니다.</li><!-- 100702 추가 -->
+</ul>
+<h6>내가 찾아본 동네를 삭제하는 방법</h6>
+<ul>
+<li>컴퓨터에 저장된 쿠키를 삭제한 다음 새 창에서 다시<br>
+접속하십시오.</li>
+<li style="margin-top:3px;"><em class="txt_ip">Internet Explorer</em>에서는 <span>[도구 &gt; 인터넷 옵션]</span> 메뉴를
+선택한 다음 <span>[검색 기록]</span>의 <span>[삭제]</span> 버튼을 눌러 쿠키를
+삭제할 수 있습니다.</li>
+</ul>
+</div>
+<a href="#" class="close_layer"><img src="http://static.naver.com/weather/images/btn_layer_close.gif" alt="레이어닫기" width="12" height="12"></a>
+<!-- //Layer Content -->
+</div>
+<span class="shadow shadow2"></span>
+</div>
+<!-- //도움말 레이어 -->
+<div class="lst" style="display:none;" id="tracedRgn">
+<table cellpadding="0" cellspacing="0" border="0">
+<caption class="blind">내가 찾아본 동네 날씨 목록</caption>
+<col><col width="36"><col width="30">
+<tbody>
+
+</tbody>
+</table>
+</div>
+</div>
+<!-- //내가 찾아본 동네 -->
+</div>
+<!-- 배너 -->
+<!-- 392669_thumb_DA.jpg -->
+<!-- http://mobile.naver.com/mobileweb/weather.nhn -->
+<!-- 도움말 -->
+<div class="img_mrgn"><a href="#" onclick="clickcr(this,'lef.help','','',event); OPS.viewOPS('ops', {url : 'https://help.naver.com/support/service/main.nhn',  param : 'serviceNo=5843&categoryNo=13449'}); return false;" title="새 창"><img src="https://ssl.pstatic.net/static/weather/images/img_left_help.gif" width="145" height="28" alt="네이버 고객센터 날씨 : 도움말"></a></div>
+<!-- 자료제공 -->
+<div id="banner_wi" class="img_mrgn"><a href="http://www.weatheri.co.kr/" onclick="clickcr(this,'lef.banner','','',event)" target="_blank"><img src="http://static.naver.com/weather/images/img_left_weatheri.gif" width="145" height="33" alt="자료제공 - weatheri"></a></div>
+<div id="banner_kw" class="img_mrgn"><a href="http://www.kweather.co.kr/" onclick="clickcr(this,'lef.banner','','',event)" target="_blank"><img src="http://static.naver.com/weather/images/img_left_kweather_v1.gif" width="145" height="33" alt="자료제공 - kweather"></a></div>
+<div id="banner_aw" style="display: none;" class="img_mrgn"><a href="http://www.accuweather.com/ " onclick="clickcr(this,'lef.banner','','',event)" target="_blank"><img src="http://static.naver.net/weather/images/logo_accuweather.gif" width="145" height="33" alt="자료제공 - accuweather"></a></div>
+<div id="banner_wn" style="display: none;" class="img_mrgn"><a href="https://global.weathernews.com/?language=ko" onclick="clickcr(this,'lef.banner','','',event)" target="_blank"><img src="http://static.naver.net/weather/images/logo_weathernews.gif" width="145" height="33" alt="자료제공 - weathernews"></a></div>
+<script type="text/javascript">
+var path = location.pathname;
+if(path.indexOf("/world/") >= 0){
+$Element("banner_wi").hide();
+$Element("banner_kw").hide();
+$Element("banner_aw").show();
+$Element("banner_wn").show();
+}
+if(path.indexOf("/main/") >= 0 || path.localeCompare("/") == 0){
+$Element("banner_wi").show();
+$Element("banner_kw").show();
+$Element("banner_aw").show();
+$Element("banner_wn").show();
+}
+</script>
+</div>
+<!-- //left area -->
+
+<!-- content -->
+<div id="content">
+<h3 class="title" id="snb"><img src="http://static.naver.com/n/local/206/weather/tit_c20.gif" width="69" height="15" alt="도시별 날씨"></h3>
+<!-- 탭 -->
+<div id="nhn_weather_tab" class="tab_out">
+<ul class="tab_default tab_open">
+<li id="tab_CT001000" class="first nhn_ui_tab"><a href="#">서울&middot;경기</a><span class="bar"></span></li>
+<li id="tab_CT002000" class="nhn_ui_tab"><a href="#">서해5도</a><span class="bar"></span></li>
+<li id="tab_CT003000" class="nhn_ui_tab"><a href="#">영서</a><span class="bar"></span></li>
+<li id="tab_CT004000" class="nhn_ui_tab"><a href="#">영동</a><span class="bar"></span></li>
+<li id="tab_CT005000" class="nhn_ui_tab"><a href="#">충북</a><span class="bar"></span></li>
+<li id="tab_CT006000" class="nhn_ui_tab"><a href="#">충남</a><span class="bar"></span></li>
+<li id="tab_CT007000" class="nhn_ui_tab"><a href="#">경북</a><span class="bar"></span></li>
+<li id="tab_CT008000" class="nhn_ui_tab"><a href="#">경남</a><span class="bar"></span></li>
+<li id="tab_CT009000" class="nhn_ui_tab"><a href="#">울릉&middot;독도</a><span class="bar"></span></li>
+<li id="tab_CT010000" class="nhn_ui_tab"><a href="#">전북</a><span class="bar"></span></li>
+<li id="tab_CT011000" class="nhn_ui_tab"><a href="#">전남</a><span class="bar"></span></li>
+<li id="tab_CT012000" class="nhn_ui_tab"><a href="#">제주</a><span class="bar"></span></li>
+</ul>
+<script type="text/javascript">$Element('tab_CT007000').addClass('on');</script>
+<!-- AU div 추가. panel wrapper -->
+<div>
+<!-- 서브메뉴 -->
+<!-- AU id 추가. tab panel. -->
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT001000">서울&middot;경기 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT002000">서해5도 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT003000">영서 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT004000">영동 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT005000">충북 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT006000">충남 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT007000">경북 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT008000">경남 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT009000">울릉&middot;독도 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT010000">전북 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT011000">전남 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<div class="tab_bx nhn_ui_panel">
+<p><a href="/rgn/cityWetrWarea.nhn?cityRgnCd=CT012000">제주 홈</a></p> <!-- 090626 -->
+<ul><li></li></ul>
+<span class="btn_close"><a href="#"><img src="http://static.naver.com/weather/images/btn_x.gif" width="15" height="14" alt="레이어닫기"></a></span>
+</div>
+<!-- //서브메뉴 -->
+</div>
+<!-- AU div 추가. panel wrapper 끝 -->
+</div>
+<!-- 20110811 초단기예보추가 -->
+<div class="c_tit2" id="content_sub">
+<h4 class="first">현재 날씨 <img src="http://static.naver.com/weather/images/bar4.gif" width="1" height="10" alt="맑음"><span>포항</span></h4>
+<p class="date2"><em>00:30</em> 발표</p>
+</div>
+<div class="w_now2">
+<ul>
+<li>
+<img src="http://static.naver.net/weather/images/w_icon/w_t01.gif" width="110" height="80" alt="맑음" class="ico_wt">
+<div class="fl">
+<h5><span>00</span>시 현재</h5>
+<em>
+
+
+
+
+
+
+14.4
+
+
+
+<span>℃</span><strong>맑음</strong>
+</em>
+<p>
+
+
+
+
+어제보다
+
+
+
+<span class="temp"><strong>-1.0</strong>℃</span><span class="bar2">|</span>
+
+
+
+
+
+
+
+
+
+강수확률<strong>0</strong>%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<a href="#" onclick="jindo.$Element('ly_atm').toggle(); clickcr(this, 'mdt.ctyopen', '', '', 1); return false;">
+<span>미세먼지<em class="normal">보통</em></span><span class="atm_ico"></span><span>오존<em class="good">좋음</em></span><span class="help">도움말</span>
+</a>
+
+
+</p>
+
+
+<div id="ly_atm" class="ly_atm" style="display:none;">
+<dl>
+<dt>미세먼지 <span>30㎍/㎥</span><strong class="normal">보통</strong><span class="b_data">(0~30)</span></dt>
+
+
+<dt>오존 <span>0.027ppm</span><strong class="good">좋음</strong><span class="b_data">(0~0.040)</span></dt>
+
+
+<dt>통합대기 <span>55</span><strong class="normal">보통</strong><span class="b_data">(51~100)</span></dt>
+
+</dl>
+<div class="chk_place">
+장흥동 측정소<span class="bar">|</span><span>업데이트 05.18 01:00</span><br>
+<a href="http://search.naver.com/search.naver?where=nexearch&amp;sm=mwe_cts&amp;ie=utf8&amp;mra=bkgy&amp;query=%EB%AF%B8%EC%84%B8%EB%A8%BC%EC%A7%80" target="_blank" onclick="clickcr(this, 'mdt.more', '', '', event);">미세먼지 예보</a>
+</div>
+<a href="#" title="닫기" class="close" onclick="jindo.$Element('ly_atm').hide(); clickcr(this, 'mdt.close', '', '', 1); return false;"><span>닫기</span></a>
+</div>
+
+
+</div>
+</li>
+
+<li class="after_h">
+<h6><em>01</em>시 예보</h6>
+<div class="inner">
+<img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l21.gif" width="64" height="46" alt="구름많음">
+<p>구름많음</p>
+</div>
+</li>
+
+<li class="after_h">
+<h6><em>02</em>시 예보</h6>
+<div class="inner">
+<img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음">
+<p>맑음</p>
+</div>
+</li>
+
+</ul>
+</div>
+<!-- 초단기 End -->
+<!-- 주간예보 -->
+<h4>주간예보 <img src="https://ssl.pstatic.net/static/weather/images/bar4.gif" width="1" height="10" alt=""><span>포항</span></h4>
+<!-- 테이블1 -->
+<table cellpadding="0" cellspacing="0" border="0" summary="오늘 내일 주간예보 테이블" class="tbl_weather tbl_today3">
+<caption class="blind">포항 오늘/내일 반일예보</caption>
+<caption>오늘 내일 주간예보</caption>
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<thead>
+<tr>
+<th scope="col">오늘 <span>5.18.</span></th>
+<th scope="col" class="line">내일 <span>5.19.</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음"></p>
+<ul class="text">
+<li class="nm"><b>오전</b> <span class="temp">15.0</span><em class="dgr">℃</em></li>
+<li class="info">맑음<br>강수확률 <span class="rain"><strong>0%</strong></span></li>
+</ul>
+</div>
+<span class="cell_line"></span>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음"></p>
+<ul class="text">
+<li class="nm"><b>오후</b> <span class="temp">26.0</span><em class="dgr">℃</em></li>
+<li class="info">맑음<br>강수확률 <span class="rain"><strong>0%</strong></span></li>
+</ul>
+</div>
+<span class="cell_line line2"></span>
+</td>
+
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음"></p>
+<ul class="text">
+<li class="nm"><b>오전</b> <span class="temp">20.0</span><em class="dgr">℃</em></li>
+<li class="info">맑음<br>강수확률 <span class="rain"><strong>0%</strong></span></li>
+</ul>
+</div>
+<span class="cell_line"></span>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음"></p>
+<ul class="text">
+<li class="nm"><b>오후</b> <span class="temp">31.0</span><em class="dgr">℃</em></li>
+<li class="info">맑음<br>강수확률 <span class="rain"><strong>0%</strong></span></li>
+</ul>
+</div>
+<span class="cell_line line2"></span>
+</td>
+
+</tr>
+</tbody>
+</table>
+
+<!-- 테이블2 -->
+<table cellpadding="0" cellspacing="0" border="0"  summary="포항 오늘 내일 이외에 다른요일 주간예보 테이블" class="tbl_weather tbl_today4">
+<caption class="blind">포항 오늘 내일 이외에 다른요일 주간예보</caption>
+<colgroup>
+<col style="width:118px">
+<col style="width:*">
+</colgroup>
+<tbody>
+
+<tr>
+<th scope="row">토요일<br><span>(5/20)</span></th>
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l1.gif" width="64" height="46" alt="맑음"></p>
+<ul class="text">
+<li class="nm">오전 <span class="temp">20.0</span><em class="dgr">℃</em></li>
+<li class="info">맑음</li>
+</ul>
+</div>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l2.gif" width="64" height="46" alt="구름조금"></p>
+<ul class="text">
+<li class="nm">오후 <span class="temp">29.0</span><em class="dgr">℃</em></li>
+<li class="info">구름조금</li>
+</ul>
+</div>
+</td>
+</tr>
+
+<tr>
+<th scope="row">일요일<br><span>(5/21)</span></th>
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l2.gif" width="64" height="46" alt="구름조금"></p>
+<ul class="text">
+<li class="nm">오전 <span class="temp">19.0</span><em class="dgr">℃</em></li>
+<li class="info">구름조금</li>
+</ul>
+</div>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l2.gif" width="64" height="46" alt="구름조금"></p>
+<ul class="text">
+<li class="nm">오후 <span class="temp">28.0</span><em class="dgr">℃</em></li>
+<li class="info">구름조금</li>
+</ul>
+</div>
+</td>
+</tr>
+
+<tr>
+<th scope="row">월요일<br><span>(5/22)</span></th>
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l2.gif" width="64" height="46" alt="구름조금"></p>
+<ul class="text">
+<li class="nm">오전 <span class="temp">17.0</span><em class="dgr">℃</em></li>
+<li class="info">구름조금</li>
+</ul>
+</div>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l2.gif" width="64" height="46" alt="구름조금"></p>
+<ul class="text">
+<li class="nm">오후 <span class="temp">24.0</span><em class="dgr">℃</em></li>
+<li class="info">구름조금</li>
+</ul>
+</div>
+</td>
+</tr>
+
+<tr>
+<th scope="row">화요일<br><span>(5/23)</span></th>
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l21.gif" width="64" height="46" alt="구름많음"></p>
+<ul class="text">
+<li class="nm">오전 <span class="temp">17.0</span><em class="dgr">℃</em></li>
+<li class="info">구름많음</li>
+</ul>
+</div>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l21.gif" width="64" height="46" alt="구름많음"></p>
+<ul class="text">
+<li class="nm">오후 <span class="temp">24.0</span><em class="dgr">℃</em></li>
+<li class="info">구름많음</li>
+</ul>
+</div>
+</td>
+</tr>
+
+<tr>
+<th scope="row">수요일<br><span>(5/24)</span></th>
+<td>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l4.gif" width="64" height="46" alt="흐리고 비"></p>
+<ul class="text">
+<li class="nm">오전 <span class="temp">17.0</span><em class="dgr">℃</em></li>
+<li class="info">흐리고 비</li>
+</ul>
+</div>
+<div class="cell">
+<p class="icon"><img src="https://ssl.pstatic.net/static/weather/images/w_icon/w_l21.gif" width="64" height="46" alt="구름많음"></p>
+<ul class="text">
+<li class="nm">오후 <span class="temp">22.0</span><em class="dgr">℃</em></li>
+<li class="info">구름많음</li>
+</ul>
+</div>
+</td>
+</tr>
+
+</tbody>
+</table>
+<!-- 기온변화 -->
+<div class="c_tit">
+<h4>기온 변화</h4>
+<span><img src="https://ssl.pstatic.net/static/weather/images/txt_temp.gif" width="181" height="12" alt="최고 기온 붉은색 원형 표시 / 최저 기온 푸른색 원형 표시"></span>
+</div>
+<div class="c_flash">
+<p id="flash_info"></p>
+</div>
+
+<!-- 주변날씨 -->
+<div class="c_env">
+<!-- 지도 -->
+<div class="left_map">
+<p class="st"> 주변의 날씨</p>
+<div class="z_map">
+<ul class="tab">
+<li><a href="#a_whtr" onclick="mapSelectChange(true, false, true, 1); return false;"><img src="https://ssl.pstatic.net/static/weather/images/tab_w_1_1_on.gif" width="47" height="20" alt="현재날씨"></a></li>
+<li><a href="#a_whtr" onclick="mapSelectChange(true, true, false, 2); return false;"><img src="https://ssl.pstatic.net/static/weather/images/tab_w_2_1.gif" width="47" height="20" alt="오늘오전"></a></li>
+<li><a href="#a_whtr" onclick="mapSelectChange(true, false, false, 3); return false;"><img src="https://ssl.pstatic.net/static/weather/images/tab_w_3_1.gif" width="47" height="20" alt="오늘오후"></a></li>
+<li><a href="#a_whtr" onclick="mapSelectChange(false, true, false, 4); return false;"><img src="https://ssl.pstatic.net/static/weather/images/tab_w_4_1.gif" width="47" height="20" alt="내일오전"></a></li>
+<li><a href="#a_whtr" onclick="mapSelectChange(false, false, false, 5); return false;"><img src="https://ssl.pstatic.net/static/weather/images/tab_w_5_1.gif" width="47" height="20" alt="내일오후"></a></li>
+</ul>
+<!-- 지도 영역 -->
+<!-- 서울/경기 주변 -->
+<div style="display: none;">
+<!-- 서울 -->
+<a href="#" id="m_CT001013" class="zone z1" onClick="javascript:goCityWetrCity('CT001013')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 인천 -->
+<a href="#" id="m_CT001028" class="zone z2" onClick="javascript:goCityWetrCity('CT001028')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 수원 -->
+<a href="#" id="m_CT001015" class="zone z3" onClick="javascript:goCityWetrCity('CT001015')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 강화 -->
+<a href="#" id="m_CT001002" class="zone z4" onClick="javascript:goCityWetrCity('CT001002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 동두천 -->
+<a href="#" id="m_CT001011" class="zone z5" onClick="javascript:goCityWetrCity('CT001011')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 양평 -->
+<a href="#" id="m_CT001021" class="zone z6" onClick="javascript:goCityWetrCity('CT001021')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 이천 -->
+<a href="#" id="m_CT001027" class="zone z7" onClick="javascript:goCityWetrCity('CT001027')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 서해 5도  -->
+<div style="display: none;">
+<!-- 백령도 -->
+<a href="#" id="m_CT002001" class="zone z1" onClick="javascript:goCityWetrCity('CT002001')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 영서  -->
+<div style="display: none;">
+<!-- 철원 -->
+<a href="#" id="m_CT003006" class="zone z1" onClick="javascript:goCityWetrCity('CT003006')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 춘천 -->
+<a href="#" id="m_CT003007" class="zone z2" onClick="javascript:goCityWetrCity('CT003007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 인제 -->
+<a href="#" id="m_CT003004" class="zone z3" onClick="javascript:goCityWetrCity('CT003004')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 홍천 -->
+<a href="#" id="m_CT003009" class="zone z4" onClick="javascript:goCityWetrCity('CT003009')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 원주 -->
+<a href="#" id="m_CT003003" class="zone z5" onClick="javascript:goCityWetrCity('CT003003')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 영월 -->
+<a href="#" id="m_CT003002" class="zone z6" onClick="javascript:goCityWetrCity('CT003002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 영동  -->
+<div style="display: none;">
+<!-- 속초 -->
+<a href="#" id="m_CT004007" class="zone z1" onClick="javascript:goCityWetrCity('CT004007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 강릉 -->
+<a href="#" id="m_CT004001" class="zone z2" onClick="javascript:goCityWetrCity('CT004001')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 대관령 -->
+<a href="#" id="m_CT004004" class="zone z3" onClick="javascript:goCityWetrCity('CT004004')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 태백 -->
+<a href="#" id="m_CT004009" class="zone z4" onClick="javascript:goCityWetrCity('CT004009')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 충북  -->
+<div style="display: none;">
+<!-- 청주 -->
+<a href="#" id="m_CT005010" class="zone z1" onClick="javascript:goCityWetrCity('CT005010')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 충주 -->
+<a href="#" id="m_CT005012" class="zone z2" onClick="javascript:goCityWetrCity('CT005012')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 제천 -->
+<a href="#" id="m_CT005007" class="zone z3" onClick="javascript:goCityWetrCity('CT005007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 보은 -->
+<a href="#" id="m_CT005003" class="zone z4" onClick="javascript:goCityWetrCity('CT005003')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 추풍령 -->
+<a href="#" id="m_CT005011" class="zone z5" onClick="javascript:goCityWetrCity('CT005011')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 충남  -->
+<div style="display: none;">
+<!-- 서산 -->
+<a href="#" id="m_CT006008" class="zone z1" onClick="javascript:goCityWetrCity('CT006008')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 아산 -->
+<a href="#" id="m_CT006010" class="zone z2" onClick="javascript:goCityWetrCity('CT006010')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 대전 -->
+<a href="#" id="m_CT006005" class="zone z3" onClick="javascript:goCityWetrCity('CT006005')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 보령 -->
+<a href="#" id="m_CT006006" class="zone z4" onClick="javascript:goCityWetrCity('CT006006')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 부여 -->
+<a href="#" id="m_CT006007" class="zone z5" onClick="javascript:goCityWetrCity('CT006007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 금산 -->
+<a href="#" id="m_CT006002" class="zone z6" onClick="javascript:goCityWetrCity('CT006002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 세종 -->
+<a href="#" id="m_CT006017" class="zone z7" onClick="javascript:goCityWetrCity('CT006017')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 경북  -->
+<div class="map m7" id="weatherMap">
+<!-- 문경 -->
+<a href="#" id="m_CT007008" class="zone z1" onClick="javascript:goCityWetrCity('CT007008')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 영주 -->
+<a href="#" id="m_CT007015" class="zone z2" onClick="javascript:goCityWetrCity('CT007015')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 봉화 -->
+<a href="#" id="m_CT007009" class="zone z3" onClick="javascript:goCityWetrCity('CT007009')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 울진 -->
+<a href="#" id="m_CT007018" class="zone z4" onClick="javascript:goCityWetrCity('CT007018')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 의성 -->
+<a href="#" id="m_CT007019" class="zone z5" onClick="javascript:goCityWetrCity('CT007019')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 안동 -->
+<a href="#" id="m_CT007012" class="zone z6" onClick="javascript:goCityWetrCity('CT007012')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 영덕 -->
+<a href="#" id="m_CT007013" class="zone z7" onClick="javascript:goCityWetrCity('CT007013')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 구미 -->
+<a href="#" id="m_CT007004" class="zone z8" onClick="javascript:goCityWetrCity('CT007004')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 대구 -->
+<a href="#" id="m_CT007007" class="zone z9" onClick="javascript:goCityWetrCity('CT007007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 영천 -->
+<a href="#" id="m_CT007016" class="zone z10" onClick="javascript:goCityWetrCity('CT007016')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 포항 -->
+<a href="#" id="m_CT007023" class="zone z11" onClick="javascript:goCityWetrCity('CT007023')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 경남  -->
+<div style="display: none;">
+<!-- 거창 -->
+<a href="#" id="m_CT008002" class="zone z1" onClick="javascript:goCityWetrCity('CT008002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 합천 -->
+<a href="#" id="m_CT008023" class="zone z2" onClick="javascript:goCityWetrCity('CT008023')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 밀양 -->
+<a href="#" id="m_CT008007" class="zone z3" onClick="javascript:goCityWetrCity('CT008007')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 울산 -->
+<a href="#" id="m_CT008012" class="zone z4" onClick="javascript:goCityWetrCity('CT008012')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 산청 -->
+<a href="#" id="m_CT008010" class="zone z5" onClick="javascript:goCityWetrCity('CT008010')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 진주 -->
+<a href="#" id="m_CT008014" class="zone z6" onClick="javascript:goCityWetrCity('CT008014')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 마산 -->
+<!--
+<a href="#" id="m_CT008006" class="zone z7" onClick="javascript:goCityWetrCity('CT008006')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+-->
+<!-- 창원 -->
+<a href="#" id="m_CT008017" class="zone z7" onClick="javascript:goCityWetrCity('CT008017')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+
+<!-- 부산 -->
+<a href="#" id="m_CT008008" class="zone z8" onClick="javascript:goCityWetrCity('CT008008')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 남해 -->
+<a href="#" id="m_CT008005" class="zone z9" onClick="javascript:goCityWetrCity('CT008005')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 통영 -->
+<a href="#" id="m_CT008018" class="zone z10" onClick="javascript:goCityWetrCity('CT008018')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 거제 -->
+<a href="#" id="m_CT008001" class="zone z11" onClick="javascript:goCityWetrCity('CT008001')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 울릉/독도  -->
+<div style="display: none;">
+<!-- 울릉도 -->
+<a href="#" id="m_CT009002" class="zone z1" onClick="javascript:goCityWetrCity('CT009002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 독도 -->
+<a href="#" id="m_CT009001" class="zone z2" onClick="javascript:goCityWetrCity('CT009001')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 전북  -->
+<div style="display: none;">
+<!-- 군산 -->
+<a href="#" id="m_CT010002" class="zone z1" onClick="javascript:goCityWetrCity('CT010002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 전주 -->
+<a href="#" id="m_CT010011" class="zone z2" onClick="javascript:goCityWetrCity('CT010011')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 부안 -->
+<a href="#" id="m_CT010006" class="zone z3" onClick="javascript:goCityWetrCity('CT010006')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 장수 -->
+<a href="#" id="m_CT010010" class="zone z4" onClick="javascript:goCityWetrCity('CT010010')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 정읍 -->
+<a href="#" id="m_CT010012" class="zone z5" onClick="javascript:goCityWetrCity('CT010012')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 임실 -->
+<a href="#" id="m_CT010009" class="zone z6" onClick="javascript:goCityWetrCity('CT010009')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 남원 -->
+<a href="#" id="m_CT010004" class="zone z7" onClick="javascript:goCityWetrCity('CT010004')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 전남  -->
+<div style="display: none;">
+<!-- 무안 -->
+<a href="#" id="m_CT011010" class="zone z1" onClick="javascript:goCityWetrCity('CT011010')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 광주 -->
+<a href="#" id="m_CT011005" class="zone z2" onClick="javascript:goCityWetrCity('CT011005')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 순천 -->
+<a href="#" id="m_CT011012" class="zone z3" onClick="javascript:goCityWetrCity('CT011012')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 목포 -->
+<a href="#" id="m_CT011009" class="zone z4" onClick="javascript:goCityWetrCity('CT011009')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 해남 -->
+<a href="#" id="m_CT011022" class="zone z5" onClick="javascript:goCityWetrCity('CT011022')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 완도 -->
+<a href="#" id="m_CT011017" class="zone z6" onClick="javascript:goCityWetrCity('CT011017')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 고흥 -->
+<a href="#" id="m_CT011002" class="zone z7" onClick="javascript:goCityWetrCity('CT011002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 여수 -->
+<a href="#" id="m_CT011014" class="zone z8" onClick="javascript:goCityWetrCity('CT011014')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+
+<!-- 제주  -->
+<div style="display: none;">
+<!-- 제주 -->
+<a href="#" id="m_CT012005" class="zone z1" onClick="javascript:goCityWetrCity('CT012005')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 고산 -->
+<a href="#" id="m_CT012001" class="zone z2" onClick="javascript:goCityWetrCity('CT012001')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 서귀포 -->
+<a href="#" id="m_CT012002" class="zone z3" onClick="javascript:goCityWetrCity('CT012002')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+<!-- 성산포 -->
+<a href="#" id="m_CT012003" class="zone z4" onClick="javascript:goCityWetrCity('CT012003')">
+<span class="ico"></span>
+<span class="temp"></span>
+</a>
+</div>
+<!-- //지도 영역 -->
+</div>
+<p class="txt">* 지도에서 지역을 누르면 자세한 날씨를 볼 수 있습니다.</p>
+</div>
+<!-- 생활지수 -->
+<div class="info_index">
+<p class="hd">
+<em class="tit">생활지수</em>
+
+<span class="update">*2017.05.18 <span class="in">업데이트</span></span>
+
+</p>
+<ul>
+
+<li>
+<dl>
+<dt><img src="https://ssl.pstatic.net/static/weather/images/ico_index0.gif" width="31" height="31" alt="빨래지수"></dt>
+<dd>
+<strong class="st">빨래지수 <span>90</span></strong>
+<p class="txt">두꺼운 빨래도 잘 말라요</p>
+</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><img src="https://ssl.pstatic.net/static/weather/images/ico_index2.gif" width="31" height="31" alt="운동지수"></dt>
+<dd>
+<strong class="st">운동지수 <span>50</span></strong>
+<p class="txt">준비 운동은 항상 충분히</p>
+</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><img src="https://ssl.pstatic.net/static/weather/images/ico_index3.gif" width="31" height="31" alt="세차지수"></dt>
+<dd>
+<strong class="st">세차지수 <span>100</span></strong>
+<p class="txt">세차효과 길어요</p>
+</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><img src="https://ssl.pstatic.net/static/weather/images/ico_index9.gif" width="31" height="31" alt="우산지수"></dt>
+<dd>
+<strong class="st">우산지수 <span>0</span></strong>
+<p class="txt">지참할 필요 없습니다</p>
+</dd>
+</dl>
+</li>
+
+<li>
+<dl>
+<dt><img src="https://ssl.pstatic.net/static/weather/images/ico_index15.gif" width="31" height="31" alt="수면지수"></dt>
+<dd>
+<strong class="st">수면지수 <span>30</span></strong>
+<p class="txt">냉방이 필요합니다</p>
+</dd>
+</dl>
+</li>
+
+</ul>
+</div>
+<!-- //생활지수 -->
+</div>
+<!-- //주변날씨 -->
+</div>
+<!-- //content -->
+
+<!-- right area -->
+<div class="aside">
+
+
+
+
+
+
+
+<!-- 레저날씨 -->
+<div class="rt_leisure">
+<h4><img src="http://static.naver.com/weather/images/h4_rt_leisure.gif" width="43" height="12" alt="레저날씨"></h4>
+<ul class="lst">
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSMT001" onclick="clickcr(this,'les.mt','LSMT001','',event)">산</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSBC001" onclick="clickcr(this,'les.beach','LSBC001','',event)">해수욕장</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSBB001" onclick="clickcr(this,'les.baseball','LSBB001','',event)">야구장</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSFB018" onclick="clickcr(this,'les.football','LSFB018','',event)">축구장</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSAP001" onclick="clickcr(this,'les.air','LSAP001','',event)">공항</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSSR001" onclick="clickcr(this,'les.ski','LSSR001','',event)">스키장</a></li>
+<li><a href="/rgn/lsurWetrOthers.nhn?lsurRgnCd=LSGF001" onclick="clickcr(this,'les.golf','LSGF001','',event)">골프장</a></li>
+<!-- <li><a href="/rgn/lsurWetrHwayMain.nhn" onclick="clickcr(this,'les.hw','','',event)">고속도로</a></li> -->
+</ul>
+</div>
+<!-- 지난 날씨 달력 -->
+<div class="rt_calendar">
+<h4><img src="http://static.naver.com/weather/images/h4_rt_last_calendar.gif" width="66" height="12" alt="지난 날씨 달력"></h4>
+<form name="past" method="get" action="" target="_top">
+<input type="hidden" name="ym">
+<table width="176" cellspacing="0" cellpadding="0">
+<caption class="blind">도시,년도 선택목록</caption>
+<tr>
+<td align="left">
+<label for="pastAddr1" class="blind">지역</label>
+<select name='upperNaverRgnCd' id='pastAddr1' style='width:84px;height:18px' >
+<option value="09" >서울특별시</option>
+<option value="17" >세종특별자치시</option>
+<option value="08" >부산광역시</option>
+<option value="11" >인천광역시</option>
+<option value="06" >대구광역시</option>
+<option value="05" >광주광역시</option>
+<option value="07" >대전광역시</option>
+<option value="10" >울산광역시</option>
+<option value="01" >강원도</option>
+<option value="02" >경기도</option>
+<option value="16" >충청북도</option>
+<option value="15" >충청남도</option>
+<option value="04" >경상북도</option>
+<option value="03" >경상남도</option>
+<option value="13" >전라북도</option>
+<option value="12" >전라남도</option>
+<option value="14" >제주도</option>
+</select>
+<label for="pastYear" class="blind">연도</label>
+<select id="pastYear" name="year" style="width:84px;height:18px" onChange='chk_month()'>
+</select>
+</td>
+</tr>
+<tr><td height="7"></td></tr>
+</table>
+</form>
+<script type="text/javascript">
+var year = '2017';
+var f = document.past;
+
+for(var i=year; i>=2002; i--)
+{
+var nIndex = f.year.length;
+f.year.options[nIndex] = new Option(i+'년', i);
+}
+</script>
+<table width="177" cellspacing="1"  cellpadding="0" class="calendar">
+<tr align="center">
+<td id='m_1' width="43" height="26">1월</td>
+<td id='m_2' width="43" height="26">2월</td>
+<td id='m_3' width="43" height="26">3월</td>
+<td id='m_4' width="44" height="26">4월</td>
+</tr>
+<tr align="center">
+<td id='m_5' width="43" height="26">5월</td>
+<td id='m_6' width="43" height="26">6월</td>
+<td id='m_7' width="43" height="26">7월</td>
+<td id='m_8' width="44" height="26">8월</td>
+</tr>
+<tr align="center">
+<td id='m_9' width="43" height="26">9월</td>
+<td id='m_10' width="43" height="26">10월</td>
+<td id='m_11' width="43" height="26">11월</td>
+<td id='m_12' width="44" height="26">12월</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+function past_go(obj, month, e) {
+var frm = document.past;
+var ym = frm.year.value + (month < 10 ? '0' : '') + month;
+var upperNaverRgnCd = frm.upperNaverRgnCd.value;
+var evt = window.event || e;
+
+clickcr(obj,'pst.month', frm.upperNaverRgnCd.value, ym ,evt);
+
+obj.href = '/period/pastWetrMain.nhn?ym='+ym+'&upperNaverRgnCd='+upperNaverRgnCd;
+}
+
+function chk_month()
+{
+var date1 = new Date('2017','5','1');
+time1 = date1.getTime();
+yy = document.past.year.value;
+
+for(i = 1; i <= 12; i++)
+{
+var date2 = new Date(yy, i - 1);
+var time2 = date2.getTime();
+if(time1 - time2 > 0)
+{
+no_link = false;
+obj = document.getElementById('m_' + i);
+obj.style.backgroundColor = '';
+obj.innerHTML = "<a href=\"#\" onclick=\"past_go(this, " + i +", event);\" class='gray03'>" + i + "월</a>";
+}
+else
+{
+no_link = true;
+obj = document.getElementById('m_' + i);
+obj.style.backgroundColor = '#FFFFFF';
+obj.innerHTML = "<span style='color:#989898'>" +i + "월</span>";
+}
+}
+}
+chk_month();
+</script>
+</div>
+
+</div>
+<!-- //right area -->
+</div>
+
+<!-- footer area -->
+<div id="footer">
+
+
+
+
+
+<!-- Footer 090928-->
+<ul>
+<li class="frst"><a href="http://www.naver.com/rules/service.html" onclick="clickcr(this,'fot.service','','',event)" target="_blank">이용약관</a></li>
+<li><a href="http://www.naver.com/rules/privacy.html" onclick="clickcr(this,'fot.privacy','','',event)" target="_blank"><strong>개인정보취급방침</strong></a></li>
+<li><a href="http://www.naver.com/rules/disclaimer.html" onclick="clickcr(this,'fot.disclaimer','','',event)" target="_blank">책임의 한계와 법적고지</a></li>
+<li><a href="https://help.naver.com/support/service/main.nhn?serviceNo=5843" onclick="clickcr(this,'fot.whelp','','',event)" target="_blank">날씨 고객센터</a></li>
+</ul>
+<p class="copy">본 콘텐츠의 저작권은 제공처에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적책임을 질 수 있습니다.</p>
+<address>
+<a class="logo" href="http://nhncorp.com/" onclick="clickcr(this,'fot.nhn','','',event)" target="_blank"><img alt="naver" src="http://static.naver.com/common/footer/ci_naver.gif" width="63" height="11" alt="NAVER"></a>
+<em>Copyright &copy;</em>
+<a href="http://nhncorp.com/" onclick="clickcr(this,'fot.nhn','','',event)" target="_blank">NAVER Corp.</a>
+<span>All Rights Reserved.</span>
+</address>
+<!--//Footer 090928-->
+
+<!-- AU Favorite Region -->
+<script type="text/javascript">
+$Fn (function () {
+//------------------------------------
+// help
+
+var welHelp = $Element ( 'layer_bubble_out');
+//show and hide
+$Fn (function (e) {
+//e.stop();			0610 삭제
+welHelp.toggle();
+if($('tracedRgn').style.display == "none"
+&& $('tracedRgn').getElementsByTagName('tr').length != 0 ) {
+$('tracedRgn').style.display = 'block';
+}
+}).attach ($('btn_help'), 'click')
+
+//close
+$Fn (function (e) {
+e.stop();
+if (e.element.tagName == "IMG" || e.element.tagName == "A") {
+welHelp.hide();
+if($('tracedRgn').getElementsByTagName('tr').length != 0 ){
+$('tracedRgn').style.display = 'block';
+}
+}
+}).attach (welHelp.$value(), 'click');
+
+$Fn (function (e) {
+if (e.element == $('btn_help')) {
+e.stop();
+return;
+}
+else {
+//welHelp.hide();
+if($('tracedRgn').getElementsByTagName('tr').length != 0 ){
+$('tracedRgn').style.display = 'block';
+}
+}		//0601 추가.
+
+}).attach (document, 'click');
+}).attach (document, 'domready');
+</script>
+<!-- AU Favorite Region -->
+<script type="text/javascript" src="/common/js/lcslog.js"></script>
+<script type="text/javascript">
+lcs_do();
+getGNB();
+</script>
+
+</div>
+<!-- //footer area -->
+</div>
+<script type="text/javascript" src="/common/js/allowSwfForChrome.js"></script>
+<script type="text/javascript">
+allowSwfForChrome.allow("http://weather.naver.com/common/swf/chromeFlashRestrictionEscape.swf", 593, 180);
+</script>
+</body>
+</html>
